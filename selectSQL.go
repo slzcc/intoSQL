@@ -33,16 +33,18 @@ func main() {
 	logStr := flag.Bool("log", false, "是否开启 log")
 	flag.Parse()
 
+	db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
+	defer db.Close()
+	db.SetMaxOpenConns(100000)
+	db.SetMaxIdleConns(100000)
+
 	var sm sync.WaitGroup
 
 	for j := 1; j < connectionStrInt; j++ {
 		ticker := time.NewTicker(1 * time.Second)
 		sm.Add(1)
 		go func() {
-			db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
-			defer db.Close()
-			db.SetMaxOpenConns(100000)
-			db.SetMaxIdleConns(100000)
+
 			for j := 1; j < requestInt; j++ {
 
 				result, err := db.Exec("select count(*) from tt;")
