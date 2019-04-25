@@ -41,10 +41,10 @@ func main() {
 		go func() {
 			db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
 			defer db.Close()
-			
+
 			for j := 1; j < requestInt; j++ {
 
-				result, err := db.Exec("select count(*) from tt);")
+				result, err := db.Exec("select count(*) from tt;")
 
 				if err != nil{
 					fmt.Println("Error!", err, helpStr, j)
