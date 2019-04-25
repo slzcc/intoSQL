@@ -40,7 +40,8 @@ func main() {
 		go func() {
 			db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
 			defer db.Close()
-
+			db.SetMaxOpenConns(100000)
+			db.SetMaxIdleConns(100000)
 			for j := 1; j < 30000000; j++ {
 				result, err := db.Exec("insert into tt(data) values(?);", strconv.Itoa(j))
 				if err != nil{
