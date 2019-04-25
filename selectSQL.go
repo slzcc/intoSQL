@@ -17,6 +17,8 @@ func main() {
 	portStr := flag.String("port", "3306", "MySQL Port")
 	connectionStr := flag.String("c", "1000", "连接数")
 	connectionStrInt, _ := strconv.Atoi(*connectionStr)
+	requestStr := flag.String("r", "30000000", "请求数")
+	requestInt, _ := strconv.Atoi(*requestStr)
 	databaseStr := flag.String("database", "test", "MySQL Databases")
 	userStr := flag.String("user", "shilei", "MySQL Username")
 	passStr := flag.String("pass", "shilei", "MySQL Password")
@@ -27,10 +29,9 @@ func main() {
 插入的数据格式为:
 	INSERT INTO tt(data) VALUES(N+1);
 如果数据插入格式错误，请自行排查!`)
-	flag.Parse()
 
-	db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
-	defer db.Close()
+	logStr := flag.Bool("log", false, "是否开启 log")
+	flag.Parse()
 
 	var sm sync.WaitGroup
 
@@ -39,13 +40,18 @@ func main() {
 		sm.Add(1)
 		go func() {
 
-			for j := 1; j < 30000000; j++ {
-				result, err := db.Exec("insert into tt(data) values(?);", strconv.Itoa(j))
+			for j := 1; j < requestInt; j++ {
+				db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
+				defer db.Close()
+				result, err := db.Exec("select count(*) from tt);")
+
 				if err != nil{
-					fmt.Println("Error!", err, helpStr)
+					fmt.Println("Error!", err, helpStr, j)
+				}
+				if *logStr {
+					fmt.Println(&result)
 				}
 
-				fmt.Println(result)
 			}
 
 			sm.Done()
@@ -55,5 +61,3 @@ func main() {
 
 	sm.Wait()
 }
-
-
