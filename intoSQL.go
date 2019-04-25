@@ -27,10 +27,10 @@ func main() {
 插入的数据格式为:
 	INSERT INTO tt(data) VALUES(N+1);
 如果数据插入格式错误，请自行排查!`)
+	logStr := flag.Bool("log", false, "是否开启 log")
 	flag.Parse()
 
-	db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
-	defer db.Close()
+
 
 	var sm sync.WaitGroup
 
@@ -38,6 +38,8 @@ func main() {
 		ticker := time.NewTicker(1 * time.Second)
 		sm.Add(1)
 		go func() {
+			db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
+			defer db.Close()
 
 			for j := 1; j < 30000000; j++ {
 				result, err := db.Exec("insert into tt(data) values(?);", strconv.Itoa(j))
@@ -45,7 +47,9 @@ func main() {
 					fmt.Println("Error!", err, helpStr)
 				}
 
-				fmt.Println(result)
+				if *logStr {
+					fmt.Println(&result)
+				}
 			}
 
 			sm.Done()

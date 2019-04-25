@@ -39,10 +39,11 @@ func main() {
 		ticker := time.NewTicker(1 * time.Second)
 		sm.Add(1)
 		go func() {
-
+			db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
+			defer db.Close()
+			
 			for j := 1; j < requestInt; j++ {
-				db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
-				defer db.Close()
+
 				result, err := db.Exec("select count(*) from tt);")
 
 				if err != nil{
