@@ -1,9 +1,0 @@
-!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
-!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
-!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
-!_TAG_PROGRAM_NAME	Exuberant Ctags	//
-!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.8	//
-NAME	Makefile	/^NAME := "into_sql"$/;"	kind:m	line:2
-SHELL	Makefile	/^SHELL := \/bin\/bash$/;"	kind:m	line:1
-VERSION	Makefile	/^VERSION := "latest"$/;"	kind:m	line:3
