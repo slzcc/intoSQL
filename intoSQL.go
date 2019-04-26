@@ -32,8 +32,8 @@ func main() {
 
 	db, _ := sqlx.Open("mysql", *userStr + ":" + *passStr + "@tcp(" + *hostStr + ":" + *portStr + ")/" + *databaseStr)
 	defer db.Close()
-	db.SetMaxOpenConns(100000)
-	db.SetMaxIdleConns(100000)
+	db.SetMaxOpenConns(0)
+	db.SetMaxIdleConns(2000)
 
 	var sm sync.WaitGroup
 
